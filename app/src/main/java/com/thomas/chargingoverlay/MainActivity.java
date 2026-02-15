@@ -1,33 +1,25 @@
+
 package com.thomas.chargingoverlay;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.net.Uri;
 import android.widget.Button;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button start = findViewById(R.id.startButton);
-        Button stop = findViewById(R.id.stopButton);
+        Button start = findViewById(R.id.startBtn);
+        Button stop = findViewById(R.id.stopBtn);
 
-        start.setOnClickListener(v -> {
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                startActivity(intent);
-                return;
-            }
-            startForegroundService(new Intent(this, OverlayService.class));
-        });
+        start.setOnClickListener(v ->
+                startService(new Intent(this, MonitorService.class)));
 
         stop.setOnClickListener(v ->
-                stopService(new Intent(this, OverlayService.class)));
+                stopService(new Intent(this, MonitorService.class)));
     }
 }

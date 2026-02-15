@@ -1,22 +1,23 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="24dp"
     android:gravity="center"
-    android:padding="24dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/startButton"
+        android:id="@+id/startBtn"
+        android:text="START MONITOR"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="START OVERLAY"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/stopButton"
+        android:id="@+id/stopBtn"
+        android:text="STOP MONITOR"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="STOP OVERLAY"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
