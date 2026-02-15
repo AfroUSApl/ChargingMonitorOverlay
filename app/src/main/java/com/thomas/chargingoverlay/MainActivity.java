@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
             startActivity(intent);
         }
 
-        startForegroundService(new Intent(this, OverlayService.class));
+        startService(new Intent(this, OverlayService.class));
         finish();
     }
 }
