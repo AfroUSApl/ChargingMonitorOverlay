@@ -11,13 +11,16 @@ android {
         applicationId "com.thomas.chargingoverlay"
         minSdk 26
         targetSdk 33
-        versionCode 7
-        versionName "1.7"
+        versionCode 9
+        versionName "1.9"
     }
 
     buildTypes {
-        release { minifyEnabled false }
+        release {
+            minifyEnabled false
+        }
     }
 }
 
-dependencies { }
+dependencies {
+}

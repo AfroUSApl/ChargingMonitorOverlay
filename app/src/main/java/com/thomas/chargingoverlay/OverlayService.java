@@ -2,79 +2,94 @@
 package com.thomas.chargingoverlay;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 public class OverlayService extends Service {
 
-    private WindowManager windowManager;
-    private TextView overlayView;
-    private boolean isCharging = false;
-
-    private final BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int status = intent.getIntExtra("status", -1);
-            isCharging = status == 2 || status == 5; // Charging or Full
-
-            if (isCharging) {
-                showOverlay();
-            } else {
-                removeOverlay();
-            }
-        }
-    };
+    private WindowManager wm;
+    private TextView textView;
+    private Thread thread;
+    private boolean running = true;
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-    }
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-    private void showOverlay() {
-        if (overlayView != null) return;
-
-        overlayView = new TextView(this);
-        overlayView.setText("Charging...");
-        overlayView.setBackgroundColor(0x88000000);
-        overlayView.setTextColor(0xFFFFFFFF);
-        overlayView.setPadding(20, 20, 20, 20);
+        textView = new TextView(this);
+        textView.setTextSize(16);
+        textView.setPadding(20, 20, 20, 20);
+        textView.setBackgroundColor(0x88000000);
+        textView.setTextColor(0xFFFFFFFF);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
         params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         params.y = 200;
 
-        windowManager.addView(overlayView, params);
+        wm.addView(textView, params);
+
+        thread = new Thread(() -> {
+            while (running) {
+                try {
+                    double voltage = readSmart("/sys/class/power_supply/battery/voltage_now");
+                    double current = readSmart("/sys/class/power_supply/battery/current_now");
+                    double watts = voltage * current;
+
+                    String display = String.format("%.2f V\n%.2f A\n%.1f W",
+                            voltage, current, watts);
+
+                    textView.post(() -> textView.setText(display));
+                    Thread.sleep(2000);
+
+                } catch (Exception e) {
+                    textView.post(() -> textView.setText("Charging..."));
+                }
+            }
+        });
+
+        thread.start();
+        return START_STICKY;
     }
 
-    private void removeOverlay() {
-        if (overlayView != null) {
-            windowManager.removeView(overlayView);
-            overlayView = null;
-        }
+    private double readSmart(String path) throws Exception {
+        String raw = readFile(path);
+        if (raw == null) return 0;
+
+        double val = Double.parseDouble(raw.trim());
+
+        if (Math.abs(val) > 100000) return val / 1000000.0;  // µ units
+        if (Math.abs(val) > 1000) return val / 1000.0;       // m units
+        return val;
+    }
+
+    private String readFile(String path) throws Exception {
+        java.lang.Process process = Runtime.getRuntime()
+                .exec(new String[]{"su", "-c", "cat " + path});
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(process.getInputStream()));
+        return br.readLine();
     }
 
     @Override
     public void onDestroy() {
+        running = false;
+        if (wm != null && textView != null) {
+            wm.removeView(textView);
+        }
         super.onDestroy();
-        unregisterReceiver(batteryReceiver);
-        removeOverlay();
     }
 
     @Override

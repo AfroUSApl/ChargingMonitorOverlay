@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
+import android.net.Uri;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
@@ -15,18 +15,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button start = findViewById(R.id.startButton);
-        Button stop = findViewById(R.id.stopButton);
+        Button start = findViewById(R.id.startBtn);
+        Button stop = findViewById(R.id.stopBtn);
 
         start.setOnClickListener(v -> {
             if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
                 startActivity(intent);
-            } else {
-                startService(new Intent(this, OverlayService.class));
+                return;
             }
+            startForegroundService(new Intent(this, OverlayService.class));
         });
 
-        stop.setOnClickListener(v -> stopService(new Intent(this, OverlayService.class)));
+        stop.setOnClickListener(v ->
+                stopService(new Intent(this, OverlayService.class)));
     }
 }
