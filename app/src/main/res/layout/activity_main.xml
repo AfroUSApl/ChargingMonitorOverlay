@@ -1,85 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:padding="20dp">
 
-        <!-- STATIC INFO -->
-        <TextView
-            android:id="@+id/cycleCount"
-            android:textSize="18sp"
-            android:text="Cycle Count: --"
-            android:paddingBottom="6dp"/>
+        <!-- ===================== -->
+        <!-- STATIC INFO SECTION   -->
+        <!-- ===================== -->
 
         <TextView
-            android:id="@+id/healthPercent"
-            android:textSize="18sp"
-            android:text="Battery Health: --"
-            android:paddingBottom="6dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Battery Overview"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp"/>
 
         <TextView
-            android:id="@+id/designCapacity"
-            android:textSize="18sp"
-            android:text="Design Capacity: --"
+            android:id="@+id/tvCycle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cycle Count: -"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvHealth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Battery Health: -"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvCapacity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Design vs Real Capacity: -"
+            android:textSize="16sp"
             android:paddingBottom="20dp"/>
 
-        <!-- BUTTONS -->
+        <!-- ===================== -->
+        <!-- LIVE SECTION          -->
+        <!-- ===================== -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Live Charging Data"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/tvVoltage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Voltage: -"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvCurrent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current: -"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvPower"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Power: -"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvTemp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Temperature: -"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvDirectInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Direct Charging Input: -"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvStep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Charging Step: -"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvTimeToFull"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time To Full: -"
+            android:textSize="16sp"
+            android:paddingBottom="24dp"/>
+
+        <!-- ===================== -->
+        <!-- CONTROL BUTTONS       -->
+        <!-- ===================== -->
+
         <Button
             android:id="@+id/startBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="START MONITOR"/>
+            android:text="Start Monitor"/>
 
         <Button
             android:id="@+id/stopBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="STOP MONITOR"
-            android:layout_marginTop="10dp"/>
-
-        <!-- LIVE INFO -->
-        <TextView
-            android:id="@+id/voltage"
-            android:textSize="22sp"
-            android:text="Voltage: --"
-            android:paddingTop="20dp"/>
-
-        <TextView
-            android:id="@+id/current"
-            android:textSize="22sp"
-            android:text="Current: --"/>
-
-        <TextView
-            android:id="@+id/power"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="Power: --"/>
-
-        <TextView
-            android:id="@+id/temp"
-            android:textSize="20sp"
-            android:text="Temp: --"/>
-
-        <TextView
-            android:id="@+id/directCurrent"
-            android:textSize="18sp"
-            android:text="Direct Input: --"/>
-
-        <TextView
-            android:id="@+id/chargingStep"
-            android:textSize="18sp"
-            android:text="Charging Step: --"/>
-
-        <TextView
-            android:id="@+id/timeToFull"
-            android:textSize="18sp"
-            android:text="Time to Full: --"/>
+            android:text="Stop Monitor"
+            android:layout_marginTop="12dp"/>
 
     </LinearLayout>
+
 </ScrollView>
