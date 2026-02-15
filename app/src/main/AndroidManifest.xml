@@ -8,7 +8,8 @@
         android:allowBackup="false"
         android:supportsRtl="true"
         android:label="Charging Monitor"
-        android:icon="@android:drawable/ic_lock_idle_charging">
+        android:icon="@android:drawable/ic_lock_idle_charging"
+        android:theme="@style/Theme.ChargingOverlay">
 
         <activity
             android:name=".MainActivity"
