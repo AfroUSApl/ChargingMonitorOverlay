@@ -1,4 +1,3 @@
-
 package com.thomas.chargingoverlay;
 
 import android.app.Activity;
@@ -15,8 +14,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button start = findViewById(R.id.startBtn);
-        Button stop = findViewById(R.id.stopBtn);
+        Button start = findViewById(R.id.startButton);
+        Button stop = findViewById(R.id.stopButton);
 
         start.setOnClickListener(v -> {
             if (!Settings.canDrawOverlays(this)) {
