@@ -1,4 +1,3 @@
-
 package com.thomas.chargingoverlay;
 
 import android.app.*;
@@ -96,7 +95,7 @@ public class OverlayService extends Service {
 
     private String readSys(String path) {
         try {
-            Process process = Runtime.getRuntime().exec(new String[]{"su", "-c", "cat " + path});
+            java.lang.Process process = Runtime.getRuntime().exec(c(new String[]{"su", "-c", "cat " + path});
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             return reader.readLine();
         } catch (Exception e) {
