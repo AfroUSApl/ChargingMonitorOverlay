@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="com.thomas.chargingoverlay"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:allowBackup="false"
-        android:supportsRtl="true"
         android:label="Charging Monitor"
         android:icon="@android:drawable/ic_lock_idle_charging"
+        android:supportsRtl="true"
         android:theme="@style/Theme.ChargingOverlay">
 
         <activity
@@ -24,7 +25,6 @@
             android:name=".MonitorService"
             android:exported="false"
             android:foregroundServiceType="dataSync"/>
-
     </application>
 
 </manifest>

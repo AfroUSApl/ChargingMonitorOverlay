@@ -2,51 +2,39 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-        <TextView android:text="Battery Static Info"
+        <!-- STATIC INFO -->
+        <TextView
+            android:id="@+id/cycleCount"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingBottom="8dp"/>
+            android:text="Cycle Count: --"
+            android:paddingBottom="6dp"/>
 
-        <TextView android:id="@+id/cycleInfo"
-            android:text="Cycle Count: --"/>
-        <TextView android:id="@+id/healthInfo"
-            android:text="Battery Health: --"/>
-        <TextView android:id="@+id/capacityInfo"
-            android:text="Design vs Real Capacity: --"/>
-
-        <TextView android:text="\nLive Charging Data"
+        <TextView
+            android:id="@+id/healthPercent"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp"/>
+            android:text="Battery Health: --"
+            android:paddingBottom="6dp"/>
 
-        <TextView android:id="@+id/voltageInfo"
-            android:text="Voltage: --"/>
-        <TextView android:id="@+id/currentInfo"
-            android:text="Current: --"/>
-        <TextView android:id="@+id/powerInfo"
-            android:text="Power: --"/>
-        <TextView android:id="@+id/tempInfo"
-            android:text="Temperature: --"/>
-        <TextView android:id="@+id/directInfo"
-            android:text="Direct Charging Current: --"/>
-        <TextView android:id="@+id/stepInfo"
-            android:text="Charging Step: --"/>
-        <TextView android:id="@+id/timeInfo"
-            android:text="Time To Full: --"/>
+        <TextView
+            android:id="@+id/designCapacity"
+            android:textSize="18sp"
+            android:text="Design Capacity: --"
+            android:paddingBottom="20dp"/>
 
+        <!-- BUTTONS -->
         <Button
             android:id="@+id/startBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="START MONITOR"
-            android:layout_marginTop="20dp"/>
+            android:text="START MONITOR"/>
 
         <Button
             android:id="@+id/stopBtn"
@@ -55,6 +43,43 @@
             android:text="STOP MONITOR"
             android:layout_marginTop="10dp"/>
 
-    </LinearLayout>
+        <!-- LIVE INFO -->
+        <TextView
+            android:id="@+id/voltage"
+            android:textSize="22sp"
+            android:text="Voltage: --"
+            android:paddingTop="20dp"/>
 
+        <TextView
+            android:id="@+id/current"
+            android:textSize="22sp"
+            android:text="Current: --"/>
+
+        <TextView
+            android:id="@+id/power"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="Power: --"/>
+
+        <TextView
+            android:id="@+id/temp"
+            android:textSize="20sp"
+            android:text="Temp: --"/>
+
+        <TextView
+            android:id="@+id/directCurrent"
+            android:textSize="18sp"
+            android:text="Direct Input: --"/>
+
+        <TextView
+            android:id="@+id/chargingStep"
+            android:textSize="18sp"
+            android:text="Charging Step: --"/>
+
+        <TextView
+            android:id="@+id/timeToFull"
+            android:textSize="18sp"
+            android:text="Time to Full: --"/>
+
+    </LinearLayout>
 </ScrollView>
