@@ -1,8 +1,9 @@
+
 package com.thomas.chargingoverlay;
 
 import android.app.*;
-import android.content.Intent;
-import android.graphics.PixelFormat;
+import android.content.*;
+import android.graphics.*;
 import android.os.*;
 import android.view.*;
 import android.widget.TextView;
@@ -14,50 +15,58 @@ public class OverlayService extends Service {
 
     private WindowManager windowManager;
     private View overlayView;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private TextView textView;
+    private Handler handler = new Handler();
+    private Runnable updater;
 
-    private Runnable updateRunnable = new Runnable() {
+    private final BroadcastReceiver powerReceiver = new BroadcastReceiver() {
         @Override
-        public void run() {
-            updateStats();
-            handler.postDelayed(this, 1000);
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_POWER_CONNECTED.equals(intent.getAction())) {
+                showOverlay();
+            } else if (Intent.ACTION_POWER_DISCONNECTED.equals(intent.getAction())) {
+                hideOverlay();
+            }
         }
     };
 
     @Override
     public void onCreate() {
         super.onCreate();
-        startForegroundService();
-        createOverlay();
-        handler.post(updateRunnable);
+        startForegroundNotification();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_POWER_CONNECTED);
+        filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        registerReceiver(powerReceiver, filter);
     }
 
-    private void startForegroundService() {
+    private void startForegroundNotification() {
+        String channelId = "charging_overlay";
         NotificationChannel channel = new NotificationChannel(
-                "charging_overlay",
-                "Charging Overlay",
-                NotificationManager.IMPORTANCE_LOW
-        );
-
+                channelId, "Charging Overlay",
+                NotificationManager.IMPORTANCE_LOW);
         NotificationManager manager = getSystemService(NotificationManager.class);
         manager.createNotificationChannel(channel);
 
-        Notification notification = new Notification.Builder(this, "charging_overlay")
-                .setContentTitle("Charging Overlay Active")
+        Notification notification = new Notification.Builder(this, channelId)
+                .setContentTitle("Charging Overlay Running")
                 .setSmallIcon(android.R.drawable.ic_lock_idle_charging)
                 .build();
 
         startForeground(1, notification);
     }
 
-    private void createOverlay() {
+    private void showOverlay() {
+        if (overlayView != null) return;
+
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        TextView textView = new TextView(this);
-        textView.setTextSize(16);
-        textView.setPadding(30, 20, 30, 20);
-        textView.setBackgroundColor(0xCC000000);
-        textView.setTextColor(0xFFFFFFFF);
+        textView = new TextView(this);
+        textView.setTextColor(Color.WHITE);
+        textView.setTextSize(18);
+        textView.setBackgroundColor(Color.argb(180, 0, 0, 0));
+        textView.setPadding(40, 40, 40, 40);
 
         overlayView = textView;
 
@@ -68,47 +77,56 @@ public class OverlayService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.TOP | Gravity.START;
-        params.x = 100;
+        params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         params.y = 200;
 
         windowManager.addView(overlayView, params);
+
+        updater = new Runnable() {
+            @Override
+            public void run() {
+                updateStats();
+                handler.postDelayed(this, 2000);
+            }
+        };
+        handler.post(updater);
+    }
+
+    private void hideOverlay() {
+        if (overlayView != null) {
+            handler.removeCallbacks(updater);
+            windowManager.removeView(overlayView);
+            overlayView = null;
+        }
     }
 
     private void updateStats() {
         try {
             String voltage = readSys("/sys/class/power_supply/battery/voltage_now");
             String current = readSys("/sys/class/power_supply/battery/current_now");
-            String temp = readSys("/sys/class/power_supply/battery/temp");
 
-            double v = Double.parseDouble(voltage) / 1000000.0;
-            double a = Math.abs(Double.parseDouble(current) / 1000000.0);
-            double w = v * a;
-            double t = Double.parseDouble(temp) / 10.0;
+            float v = Float.parseFloat(voltage) / 1000000f;
+            float c = Float.parseFloat(current) / 1000000f;
+            float w = Math.abs(v * c);
 
-            ((TextView) overlayView).setText(
-                    String.format("%.1fW\n%.2fV | %.2fA\n%.1f°C", w, v, a, t)
-            );
-
-        } catch (Exception ignored) {}
+            textView.setText(String.format("V: %.2fV  A: %.2fA  W: %.2fW", v, c, w));
+        } catch (Exception e) {
+            textView.setText("Reading charging data...");
+        }
     }
 
-    private String readSys(String path) {
-        try {
-            java.lang.Process process = Runtime.getRuntime().exec(
-        new String[]{"su", "-c", "cat " + path});
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            return reader.readLine();
-        } catch (Exception e) {
-            return "0";
-        }
+    private String readSys(String path) throws Exception {
+        java.lang.Process process = Runtime.getRuntime().exec(
+                new String[]{"su", "-c", "cat " + path});
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(process.getInputStream()));
+        return reader.readLine();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (overlayView != null) windowManager.removeView(overlayView);
-        handler.removeCallbacks(updateRunnable);
+        unregisterReceiver(powerReceiver);
     }
 
     @Override

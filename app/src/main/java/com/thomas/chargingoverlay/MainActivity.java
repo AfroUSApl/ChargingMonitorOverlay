@@ -1,3 +1,4 @@
+
 package com.thomas.chargingoverlay;
 
 import android.app.Activity;
@@ -18,6 +19,7 @@ public class MainActivity extends Activity {
             startActivity(intent);
         }
 
+        startForegroundService(new Intent(this, OverlayService.class));
         finish();
     }
 }
