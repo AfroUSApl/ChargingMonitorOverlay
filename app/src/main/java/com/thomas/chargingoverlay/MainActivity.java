@@ -18,26 +18,31 @@ public class MainActivity extends Activity {
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 100, 50, 50);
+        layout.setPadding(60,120,60,60);
 
         TextView tv = new TextView(this);
-        tv.setText("Charging Overlay v1.4 (Minimal)\n\nGrant overlay permission, then press START.");
+        tv.setText("Charging Overlay v1.5 (Root)\n\nGrant overlay permission, then START.");
         tv.setTextSize(18);
 
-        Button btn = new Button(this);
-        btn.setText("START OVERLAY");
-        btn.setOnClickListener(v -> {
+        Button start = new Button(this);
+        start.setText("START OVERLAY");
+        start.setOnClickListener(v -> {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
                 startActivity(intent);
             } else {
-                startService(new Intent(this, OverlayService.class));
+                startForegroundService(new Intent(this, OverlayService.class));
             }
         });
 
+        Button stop = new Button(this);
+        stop.setText("STOP OVERLAY");
+        stop.setOnClickListener(v -> stopService(new Intent(this, OverlayService.class)));
+
         layout.addView(tv);
-        layout.addView(btn);
+        layout.addView(start);
+        layout.addView(stop);
 
         setContentView(layout);
     }
