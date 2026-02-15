@@ -1,21 +1,35 @@
 package com.thomas.chargingoverlay;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 public class MainActivity extends AppCompatActivity {
 
-    private TextView status;
-    private TextView voltage;
-    private TextView current;
-    private TextView power;
+    private TextView voltageText;
+    private TextView currentText;
+    private TextView powerText;
+    private TextView statusText;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            double v = intent.getDoubleExtra("voltage", 0);
+            double c = intent.getDoubleExtra("current", 0);
+            double p = intent.getDoubleExtra("power", 0);
+
+            statusText.setText("Status: Charging");
+            voltageText.setText(String.format("Voltage: %.2f V", v));
+            currentText.setText(String.format("Current: %.2f A", c));
+            powerText.setText(String.format("Power: %.2f W", p));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,63 +39,29 @@ public class MainActivity extends AppCompatActivity {
         Button start = findViewById(R.id.startBtn);
         Button stop = findViewById(R.id.stopBtn);
 
-        status = findViewById(R.id.statusText);
-        voltage = findViewById(R.id.voltageText);
-        current = findViewById(R.id.currentText);
-        power = findViewById(R.id.powerText);
+        voltageText = findViewById(R.id.voltageText);
+        currentText = findViewById(R.id.currentText);
+        powerText = findViewById(R.id.powerText);
+        statusText = findViewById(R.id.statusText);
 
-        start.setOnClickListener(v -> {
-            startService(new Intent(this, MonitorService.class));
-            updateUI();
-        });
+        start.setOnClickListener(v ->
+                startService(new Intent(this, MonitorService.class)));
 
         stop.setOnClickListener(v -> {
             stopService(new Intent(this, MonitorService.class));
-            status.setText("Status: Stopped");
+            statusText.setText("Status: Stopped");
         });
     }
 
-    private void updateUI() {
-
-        double voltageRaw = readSysfs("/sys/class/power_supply/battery/voltage_now");
-        double currentRaw = readSysfs("/sys/class/power_supply/battery/current_now");
-
-        if (voltageRaw == 0) {
-            status.setText("Status: No kernel data");
-            return;
-        }
-
-        double volts = voltageRaw / 1000000.0;
-        double amps = currentRaw / 1000000.0;
-        double watts = volts * amps;
-
-        status.setText("Status: Charging");
-        voltage.setText("Voltage: " + String.format("%.2f V", volts));
-        current.setText("Current: " + String.format("%.2f A", amps));
-        power.setText("Power: " + String.format("%.2f W", watts));
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter("UPDATE_STATS"));
     }
 
-    private double readSysfs(String path) {
-        try {
-
-            Process process = Runtime.getRuntime()
-                    .exec(new String[]{"su", "-c", "cat " + path});
-
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            String line = reader.readLine();
-            reader.close();
-            process.waitFor();
-
-            if (line != null && !line.isEmpty()) {
-                return Double.parseDouble(line.trim());
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
     }
 }
