@@ -1,6 +1,7 @@
 
 package com.thomas.chargingoverlay;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,9 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         layout.setPadding(50, 100, 50, 50);
 
         TextView tv = new TextView(this);
-        tv.setText("Charging Overlay v1.3\n\nGrant overlay permission, then press START.");
+        tv.setText("Charging Overlay v1.4 (Minimal)\n\nGrant overlay permission, then press START.");
         tv.setTextSize(18);
 
         Button btn = new Button(this);
@@ -39,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         layout.addView(tv);
         layout.addView(btn);
+
         setContentView(layout);
     }
 }
