@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+
 import androidx.core.app.NotificationCompat;
 
 import java.io.BufferedReader;
@@ -17,16 +18,17 @@ public class MonitorService extends Service {
 
     private static final String CHANNEL_ID = "charging_monitor_channel";
     private Handler handler = new Handler();
-    private Runnable updateRunnable;
+    private Runnable runnable;
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
 
-        startForeground(1, buildNotification("Starting..."));
+        Notification notification = buildNotification("Starting...");
+        startForeground(1, notification);
 
-        updateRunnable = new Runnable() {
+        runnable = new Runnable() {
             @Override
             public void run() {
                 updateNotification();
@@ -34,30 +36,45 @@ public class MonitorService extends Service {
             }
         };
 
-        handler.post(updateRunnable);
+        handler.post(runnable);
+    }
+
+    @Override
+    public void onDestroy() {
+        handler.removeCallbacks(runnable);
+        super.onDestroy();
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     private void updateNotification() {
 
-        double currentRaw = readSysfs("/sys/class/power_supply/battery/current_now");
         double voltageRaw = readSysfs("/sys/class/power_supply/battery/voltage_now");
+        double currentRaw = readSysfs("/sys/class/power_supply/battery/current_now");
 
-        double amps = currentRaw / 1000.0;           // Samsung mA
-        double volts = voltageRaw / 1000000.0;       // µV → V
-        double watts = amps * volts;
+        if (voltageRaw == 0) {
+            Notification notification = buildNotification("No kernel data");
+            getManager().notify(1, notification);
+            return;
+        }
+
+        double volts = voltageRaw / 1000000.0;
+        double amps = currentRaw / 1000000.0;
+        double watts = volts * amps;
 
         String text = String.format("V: %.2fV  A: %.2fA  W: %.2fW",
                 volts, amps, watts);
 
         Notification notification = buildNotification(text);
-
-        NotificationManager manager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        manager.notify(1, notification);
+        getManager().notify(1, notification);
     }
 
     private double readSysfs(String path) {
         try {
+
             Process process = Runtime.getRuntime()
                     .exec(new String[]{"su", "-c", "cat " + path});
 
@@ -66,12 +83,15 @@ public class MonitorService extends Service {
 
             String line = reader.readLine();
             reader.close();
+            process.waitFor();
 
-            if (line != null) {
+            if (line != null && !line.isEmpty()) {
                 return Double.parseDouble(line.trim());
             }
 
-        } catch (Exception ignored) { }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return 0;
     }
@@ -85,30 +105,18 @@ public class MonitorService extends Service {
                 .build();
     }
 
+    private NotificationManager getManager() {
+        return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     "Charging Monitor",
-                    NotificationManager.IMPORTANCE_LOW);
-
-            NotificationManager manager =
-                    getSystemService(NotificationManager.class);
-
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            getManager().createNotificationChannel(channel);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        handler.removeCallbacks(updateRunnable);
-        super.onDestroy();
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 }
