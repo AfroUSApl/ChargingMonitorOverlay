@@ -1,0 +1,26 @@
+
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.thomas.chargingoverlay'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.thomas.chargingoverlay"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+}
