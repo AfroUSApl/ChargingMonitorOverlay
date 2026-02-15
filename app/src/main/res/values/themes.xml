@@ -1,4 +1,4 @@
-<resources>
-    <style name="Theme.ChargingOverlay" parent="Theme.AppCompat.Light.DarkActionBar">
-    </style>
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.ChargingOverlay" parent="Theme.AppCompat.Light.DarkActionBar"/>
 </resources>
