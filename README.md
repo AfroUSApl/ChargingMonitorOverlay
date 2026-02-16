@@ -246,3 +246,8 @@ Built for power users who want real battery telemetry.
 # 📜 License
 
 MIT License
+
+---
+
+**Current Version:** 3.16\
+Generated: 2026-02-16 UTC
