@@ -1,189 +1,228 @@
-# Charging Monitor Overlay (Root) 🔋
+# 🔋 ChargingMonitorOverlay
 
-A lightweight Android overlay application that displays **real battery
-charging data** directly on your screen while charging.
+Advanced Android battery telemetry monitor with root access.  
+Reads raw kernel battery data directly from `/sys/class/power_supply/` and displays:
 
-Designed for AMOLED devices with: - Burn-in safe pixel shifting - Real
-battery voltage, current and wattage - Root-based accurate sysfs
-readings - Minimal resource usage
+- Real voltage
+- Charge / discharge current
+- Real power (W)
+- Battery temperature
+- CPU temperature
+- Cycle count
+- Battery health estimation
+- Direct charging input
+- Charging step detection
+- Time to full
+- Live power graph
 
-------------------------------------------------------------------------
+Designed for power users, engineers, and telemetry enthusiasts.
 
-# 📱 Features
+---
 
--   🔋 Battery percentage
--   ⚡ Real battery voltage (V)
--   🔌 Real battery current (A)
--   🔥 Real battery charging power (W)
--   ⏳ Estimated time until full
--   🛡 Burn-in safe pixel shifting (moves overlay periodically)
--   🚀 Foreground service for stability
--   🔒 Root-based data reading from `/sys/class/power_supply/`
--   ⚙ Show only while charging (v1.8+)
--   ▶ Start / Stop overlay controls
+# 🚀 Features
 
-------------------------------------------------------------------------
+## 📊 Battery Overview
+- Cycle count
+- Real health calculation (full vs design capacity)
+- Design vs actual capacity (mAh)
 
-# ⚠ Root Required
+## ⚡ Live Charging Data
+- Voltage (V)
+- Current (A)
+- Power (W)
+- Battery temperature (°C)
+- CPU temperature (°C)
+- Direct input current
+- Charging step
+- Time to full (minutes)
 
-This app reads battery data directly from:
+## 📈 Live Power Graph
+- Real-time charge/discharge visualization
+- Positive = charging
+- Negative = discharging
+- Automatic scaling
 
-    /sys/class/power_supply/battery/
+## 🧠 Smart Detection
+- Auto-detects `current_now` vs `batt_current_ua_now`
+- Converts µA / mA / raw values automatically
+- Handles Samsung-specific battery nodes
 
-Root (Magisk or similar) is required for accurate: - current_now -
-voltage_now - power_now (if available)
+---
 
-Without root, Android restricts access.
+# 📦 Requirements
 
-------------------------------------------------------------------------
+- Android 8.0+ (API 26+)
+- Root access (Magisk recommended)
+- Kernel exposing `/sys/class/power_supply/battery/`
 
-# 🔧 Installation
+Tested on Samsung devices with OneUI + Magisk.
 
-## Option 1 -- Install APK
+---
 
-1.  Download the latest release APK from GitHub.
-2.  Enable "Install unknown apps".
-3.  Install APK.
-4.  Grant:
-    -   "Appear on top"
-    -   Root permission (Magisk will prompt)
-5.  Press **START OVERLAY**.
+# 🛠 Installation
 
-## Option 2 -- Build via GitHub Actions
+## Option 1 — Build from source
 
-1.  Push project to your GitHub repository.
-2.  GitHub Actions will automatically build debug APK.
-3.  Download artifact from Actions tab.
-4.  Install on device.
+```bash
+git clone https://github.com/AfroUSApl/ChargingMonitorOverlay.git
+cd ChargingMonitorOverlay
+./gradlew assembleDebug
+```
 
-------------------------------------------------------------------------
+APK will be generated in:
 
-# 📊 Why Charger Shows 15W but App Shows 11--12W?
+```
+app/build/outputs/apk/debug/
+```
 
-This is completely normal.
+Install manually:
 
-### 🔌 Cable Meter = Charger Output
+```bash
+adb install app-debug.apk
+```
 
-Example:
+Or install directly on device.
 
-    9V × 1.6A = 14.4W
+---
 
-This is power coming FROM the charger.
+## Option 2 — Direct APK
 
-------------------------------------------------------------------------
+Download latest release from GitHub Releases section.
 
-### 📱 App = Real Battery Power
+---
 
-Example:
+# 🔐 Root Permission
 
-    3.85V × 3.08A = 11.9W
+On first start:
 
-This is power going INTO the battery.
+1. Tap **Start Monitor**
+2. Grant root permission in Magisk
+3. Telemetry starts updating live
 
-------------------------------------------------------------------------
+If root is denied → data will not update.
 
-### ⚡ Why the difference?
+---
 
-Between charger and battery there are:
+# 📁 Kernel Data Source
 
--   DC-DC conversion losses
--   Heat
--   PMIC efficiency loss
--   Internal phone consumption
--   Cable resistance
+The app reads directly from:
 
-Typical charging efficiency: **75--85%**
+```
+/sys/class/power_supply/battery/
+```
 
-So:
+Examples:
 
-15W from charger\
-→ \~11--12W into battery
+- `current_now`
+- `batt_current_ua_now`
+- `voltage_now`
+- `power_now`
+- `batt_temp`
+- `battery_cycle`
+- `charge_full`
+- `charge_full_design`
+- `time_to_full_now`
 
-Your app shows the real battery intake power.
+---
 
-------------------------------------------------------------------------
+# 📊 Data Interpretation
 
-# 🛡 Burn-In Protection
+| Value | Meaning |
+|--------|----------|
+| Positive current | Charging |
+| Negative current | Discharging |
+| Power (W) | V × A |
+| Health % | charge_full / charge_full_design |
+| Time To Full | Remaining charge time (minutes) |
 
-To protect AMOLED panels, the overlay:
+---
 
--   Moves slightly every few seconds
--   Shifts position randomly within safe bounds
--   Prevents static pixel damage
+# ⚠ Notes
 
-------------------------------------------------------------------------
+- Some manufacturers lock real capacity values.
+- Health 100% does not always mean no degradation.
+- CPU temperature location may vary by device.
+- Power values fluctuate rapidly (normal behavior).
 
-# 📌 Changelog
+---
 
-## v1.8
+# 🧾 Changelog
 
--   Added "Show only while charging" option
--   Improved overlay visibility logic
--   Stability improvements
+---
 
-## v1.7
+## 🟢 v1.0
+- Basic voltage & current display
+- Root-based sysfs reading
 
--   Added AMOLED burn-in safe pixel shifting
--   Improved root execution reliability
--   Minor UI refinements
+## 🟢 v1.5
+- Added power calculation
+- Added charging detection
 
-## v1.6
+## 🟢 v1.9
+- Smart kernel unit detection
+- µA / mA auto scaling
+- Safe fallback handling
 
--   Improved root current detection
--   Added current_avg fallback
--   Improved watt calculation accuracy
+## 🟢 v2.0
+- Foreground service support
+- Status notification
+- Basic monitoring controls
 
-## v1.5
+## 🟢 v2.1
+- Improved root handling
+- Fixed incorrect scaling issues
 
--   Root charging detection
--   Start / Stop overlay buttons
--   Improved service lifecycle
+## 🟢 v3.0
+- Full telemetry dashboard
+- Battery overview section
+- Health calculation
+- Direct charging input detection
+- Charging step detection
+- Time-to-full reading
 
-## v1.4
+## 🟢 v3.1
+- Material card UI redesign
+- CPU temperature added
+- Human-readable unit conversion
+- Live power graph
+- Improved smoothing
 
--   Minimal stable build
--   Overlay stability improvements
+## 🟢 v3.5
+- Watt history smoothing
+- Charge/discharge detection logic refined
+- Stability improvements
 
-## v1.3
+## 🟢 v3.10
+- Better Samsung node compatibility
+- Auto-detect `batt_current_ua_now`
+- Improved health calculation accuracy
 
--   GitHub-ready structure
--   Foreground service stabilization
+## 🟢 v3.15
+- Graph scaling improvements
+- Smarter negative/positive power handling
+- UI polish & stability fixes
+- Optimized background handler
 
-## v1.2
+---
 
--   Crash fixes
--   Manifest corrections
+# 📌 Roadmap
 
-## v1.1
+- Per-cycle degradation tracking
+- CSV logging export
+- Multi-line telemetry graph
+- Charging phase detection (CC / CV)
+- Efficiency calculation
+- Thermal throttling alerts
 
--   Initial root sysfs reading
--   Overlay service implementation
+---
 
-## v1.0
+# 👨‍💻 Author
 
--   Initial project release
--   Basic overlay display
+thomas
+Built for power users who want real battery telemetry.
 
-------------------------------------------------------------------------
-
-# 🧠 Technical Notes
-
--   Voltage is read in microvolts → converted to volts
--   Current is read in microamps → converted to amps
--   Wattage = Voltage × Current
--   Time to full is read from `time_to_full_now` when available
-
-------------------------------------------------------------------------
-
-# 🚀 Future Ideas
-
--   Charging efficiency % calculation
--   Temperature monitoring
--   Graph history view
--   Lock screen specific mode
-
-------------------------------------------------------------------------
+---
 
 # 📜 License
 
-Personal project -- free to modify and improve.
+MIT License
