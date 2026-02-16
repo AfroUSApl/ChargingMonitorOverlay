@@ -146,6 +146,19 @@ Common nodes used:
 - Some kernels expose multiple current nodes — auto-detection handles this.
 
 ---
+## 🏗 Build Environment
+
+-   GitHub Actions (Ubuntu runner)
+-   JDK 17 (Temurin)
+-   Gradle 8.4 (wrapper)
+-   Compile SDK 34
+-   Target SDK 34
+-   Min SDK 26
+
+Build command:
+
+    ./gradlew assembleDebug
+---
 
 # 🧾 Changelog
 
