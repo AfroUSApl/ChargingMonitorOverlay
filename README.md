@@ -17,6 +17,7 @@ Reads raw kernel battery data directly from `/sys/class/power_supply/` and displ
 
 Designed for power users, engineers, and telemetry enthusiasts.
 
+![ChargingMonitorOverlay](chargingmonitor1.jpg)
 ---
 
 # 🚀 Features
