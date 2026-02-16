@@ -1,129 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="#FAFAFA">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
-        <!-- ===================== -->
-        <!-- STATIC INFO SECTION   -->
-        <!-- ===================== -->
-
-        <TextView
+        <!-- Battery Overview Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Battery Overview"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:paddingBottom="12dp"/>
+            app:cardElevation="6dp"
+            app:cardCornerRadius="16dp"
+            android:layout_marginBottom="16dp">
 
-        <TextView
-            android:id="@+id/tvCycle"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:text="Battery Overview"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+
+                <TextView android:id="@+id/cycleCount"/>
+                <TextView android:id="@+id/healthPercent"/>
+                <TextView android:id="@+id/designCapacity"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Live Charging Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cycle Count: -"
-            android:textSize="16sp"/>
+            app:cardElevation="6dp"
+            app:cardCornerRadius="16dp"
+            android:layout_marginBottom="16dp">
 
-        <TextView
-            android:id="@+id/tvHealth"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:text="Live Charging Data"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+
+                <TextView android:id="@+id/voltage"/>
+                <TextView android:id="@+id/current"/>
+                <TextView android:id="@+id/power"/>
+                <TextView android:id="@+id/battTemp"/>
+                <TextView android:id="@+id/cpuTemp"/>
+                <TextView android:id="@+id/directCurrent"/>
+                <TextView android:id="@+id/chargingStep"/>
+                <TextView android:id="@+id/timeToFull"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Graph -->
+        <com.thomas.chargingoverlay.PowerGraphView
+            android:id="@+id/powerGraph"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Battery Health: -"
-            android:textSize="16sp"/>
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"/>
 
-        <TextView
-            android:id="@+id/tvCapacity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Design vs Real Capacity: -"
-            android:textSize="16sp"
-            android:paddingBottom="20dp"/>
-
-        <!-- ===================== -->
-        <!-- LIVE SECTION          -->
-        <!-- ===================== -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Live Charging Data"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:paddingBottom="12dp"/>
-
-        <TextView
-            android:id="@+id/tvVoltage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Voltage: -"
-            android:textSize="18sp"/>
-
-        <TextView
-            android:id="@+id/tvCurrent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Current: -"
-            android:textSize="18sp"/>
-
-        <TextView
-            android:id="@+id/tvPower"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Power: -"
-            android:textSize="18sp"/>
-
-        <TextView
-            android:id="@+id/tvTemp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Temperature: -"
-            android:textSize="18sp"/>
-
-        <TextView
-            android:id="@+id/tvDirectInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Direct Charging Input: -"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tvStep"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Charging Step: -"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tvTimeToFull"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Time To Full: -"
-            android:textSize="16sp"
-            android:paddingBottom="24dp"/>
-
-        <!-- ===================== -->
-        <!-- CONTROL BUTTONS       -->
-        <!-- ===================== -->
-
+        <!-- Buttons -->
         <Button
             android:id="@+id/startBtn"
+            android:text="START MONITOR"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start Monitor"/>
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/stopBtn"
+            android:text="STOP MONITOR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Stop Monitor"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="8dp"/>
 
     </LinearLayout>
-
 </ScrollView>
