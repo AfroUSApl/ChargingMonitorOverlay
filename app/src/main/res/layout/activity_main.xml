@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA">
+    android:background="@android:color/background_light">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,83 +11,145 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Battery Overview Card -->
+        <!-- ========================= -->
+        <!-- BATTERY OVERVIEW CARD     -->
+        <!-- ========================= -->
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="6dp"
+            android:layout_marginBottom="16dp"
             app:cardCornerRadius="16dp"
-            android:layout_marginBottom="16dp">
+            app:cardElevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Battery Overview"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                <TextView android:id="@+id/cycleCount"/>
-                <TextView android:id="@+id/healthPercent"/>
-                <TextView android:id="@+id/designCapacity"/>
+                <TextView
+                    android:id="@+id/cycleCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cycle Count: -" />
+
+                <TextView
+                    android:id="@+id/healthPercent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Health: -" />
+
+                <TextView
+                    android:id="@+id/designCapacity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Design vs Real: -" />
 
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Live Charging Card -->
+        <!-- ========================= -->
+        <!-- LIVE DATA CARD            -->
+        <!-- ========================= -->
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="6dp"
             app:cardCornerRadius="16dp"
-            android:layout_marginBottom="16dp">
+            app:cardElevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Live Charging Data"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                <TextView android:id="@+id/voltage"/>
-                <TextView android:id="@+id/current"/>
-                <TextView android:id="@+id/power"/>
-                <TextView android:id="@+id/battTemp"/>
-                <TextView android:id="@+id/cpuTemp"/>
-                <TextView android:id="@+id/directCurrent"/>
-                <TextView android:id="@+id/chargingStep"/>
-                <TextView android:id="@+id/timeToFull"/>
+                <TextView
+                    android:id="@+id/voltage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Voltage: -" />
+
+                <TextView
+                    android:id="@+id/current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current: -" />
+
+                <TextView
+                    android:id="@+id/power"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Power: -" />
+
+                <TextView
+                    android:id="@+id/temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Battery Temp: -" />
+
+                <TextView
+                    android:id="@+id/cpuTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CPU Temp: -" />
+
+                <TextView
+                    android:id="@+id/directCurrent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Direct Input Current: -" />
+
+                <TextView
+                    android:id="@+id/chargingStep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Charging Step: -" />
+
+                <TextView
+                    android:id="@+id/timeToFull"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time To Full: -" />
 
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Graph -->
-        <com.thomas.chargingoverlay.PowerGraphView
-            android:id="@+id/powerGraph"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Buttons -->
-        <Button
-            android:id="@+id/startBtn"
-            android:text="START MONITOR"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <!-- ========================= -->
+        <!-- BUTTONS                   -->
+        <!-- ========================= -->
 
         <Button
-            android:id="@+id/stopBtn"
-            android:text="STOP MONITOR"
+            android:id="@+id/startButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="20dp"
+            android:text="START MONITOR" />
+
+        <Button
+            android:id="@+id/stopButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="STOP MONITOR" />
 
     </LinearLayout>
+
 </ScrollView>
