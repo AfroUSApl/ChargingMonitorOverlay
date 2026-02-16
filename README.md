@@ -1,30 +1,26 @@
 # 🔋 ChargingMonitorOverlay
 
-Advanced Android battery telemetry monitor with root access.  
-Reads raw kernel battery data directly from `/sys/class/power_supply/` and displays:
+Advanced Android battery telemetry monitor with root access.
 
-- Real voltage
-- Charge / discharge current
-- Real power (W)
-- Battery temperature
-- CPU temperature
-- Cycle count
-- Battery health estimation
-- Direct charging input
-- Charging step detection
-- Time to full
-- Live power graph
+Reads raw kernel battery data directly from:
+
+```
+/sys/class/power_supply/
+```
+
+Displays real low-level battery telemetry in human-readable form.
 
 Designed for power users, engineers, and telemetry enthusiasts.
 
 ![ChargingMonitorOverlay](images/chargingmonitor1.jpg)
+
 ---
 
 # 🚀 Features
 
 ## 📊 Battery Overview
 - Cycle count
-- Real health calculation (full vs design capacity)
+- Real health calculation (Full vs Design capacity)
 - Design vs actual capacity (mAh)
 
 ## ⚡ Live Charging Data
@@ -33,20 +29,24 @@ Designed for power users, engineers, and telemetry enthusiasts.
 - Power (W)
 - Battery temperature (°C)
 - CPU temperature (°C)
-- Direct input current
-- Charging step
+- Direct charging input current
+- Charging step detection
 - Time to full (minutes)
 
 ## 📈 Live Power Graph
-- Real-time charge/discharge visualization
-- Positive = charging
-- Negative = discharging
+- Real-time charge / discharge visualization
+- Positive values = charging
+- Negative values = discharging
 - Automatic scaling
+- Smoothed watt history
 
 ## 🧠 Smart Detection
-- Auto-detects `current_now` vs `batt_current_ua_now`
-- Converts µA / mA / raw values automatically
-- Handles Samsung-specific battery nodes
+- Auto-detects:
+  - `current_now`
+  - `batt_current_ua_now`
+- Automatic µA / mA conversion
+- Samsung-specific kernel node handling
+- Direct charging node support
 
 ---
 
@@ -62,7 +62,7 @@ Tested on Samsung devices with OneUI + Magisk.
 
 # 🛠 Installation
 
-## Option 1 — Build from source
+## Option 1 — Build from Source
 
 ```bash
 git clone https://github.com/AfroUSApl/ChargingMonitorOverlay.git
@@ -82,13 +82,11 @@ Install manually:
 adb install app-debug.apk
 ```
 
-Or install directly on device.
-
 ---
 
 ## Option 2 — Direct APK
 
-Download latest release from GitHub Releases section.
+Download the latest release from the GitHub Releases section.
 
 ---
 
@@ -100,7 +98,7 @@ On first start:
 2. Grant root permission in Magisk
 3. Telemetry starts updating live
 
-If root is denied → data will not update.
+If root is denied → kernel values will not update.
 
 ---
 
@@ -112,7 +110,7 @@ The app reads directly from:
 /sys/class/power_supply/battery/
 ```
 
-Examples:
+Common nodes used:
 
 - `current_now`
 - `batt_current_ua_now`
@@ -123,6 +121,7 @@ Examples:
 - `charge_full`
 - `charge_full_design`
 - `time_to_full_now`
+- `direct_charging_iin`
 
 ---
 
@@ -132,7 +131,7 @@ Examples:
 |--------|----------|
 | Positive current | Charging |
 | Negative current | Discharging |
-| Power (W) | V × A |
+| Power (W) | Voltage × Current |
 | Health % | charge_full / charge_full_design |
 | Time To Full | Remaining charge time (minutes) |
 
@@ -141,15 +140,14 @@ Examples:
 # ⚠ Notes
 
 - Some manufacturers lock real capacity values.
-- Health 100% does not always mean no degradation.
+- Health 100% does not always mean zero degradation.
 - CPU temperature location may vary by device.
 - Power values fluctuate rapidly (normal behavior).
+- Some kernels expose multiple current nodes — auto-detection handles this.
 
 ---
 
 # 🧾 Changelog
-
----
 
 ## 🟢 v1.0
 - Basic voltage & current display
@@ -204,6 +202,14 @@ Examples:
 - UI polish & stability fixes
 - Optimized background handler
 
+## 🟢 v3.16
+- Adaptive launcher icon support
+- Graph rendering stability improvements
+- Improved Samsung kernel node handling
+- Better fallback logic for missing power nodes
+- Minor performance optimizations
+- Project cleanup
+
 ---
 
 # 📌 Roadmap
@@ -219,7 +225,7 @@ Examples:
 
 # 👨‍💻 Author
 
-thomas
+Thomas  
 Built for power users who want real battery telemetry.
 
 ---
