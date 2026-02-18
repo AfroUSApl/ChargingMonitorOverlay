@@ -6,6 +6,9 @@ import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 public class MonitorService extends Service {
 
     private static final String CHANNEL_ID = "charging_monitor_channel";
@@ -17,7 +20,7 @@ public class MonitorService extends Service {
         createNotificationChannel();
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Charging Monitor v3.17 (Safe Mode)")
+                .setContentTitle("Charging Monitor v3.17 (Safe)")
                 .setContentText("Stable telemetry engine running...")
                 .setSmallIcon(android.R.drawable.ic_lock_idle_charging)
                 .build();
@@ -30,9 +33,7 @@ public class MonitorService extends Service {
 
     @Override
     public void onDestroy() {
-        if (engine != null) {
-            engine.stop();
-        }
+        if (engine != null) engine.stop();
         super.onDestroy();
     }
 
@@ -49,6 +50,19 @@ public class MonitorService extends Service {
                     NotificationManager.IMPORTANCE_LOW
             );
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        }
+    }
+
+    // 🔥 Restore readSys so MainActivity compiles
+
+    public static String readSys(String path) {
+        try {
+            Process process = Runtime.getRuntime().exec(new String[]{"su","-c","cat " + path});
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            return reader.readLine();
+        } catch (Exception e) {
+            return null;
         }
     }
 }
